@@ -23,3 +23,8 @@ def cat_list(request):
     return Response(serializer.data)
 
 
+@api_view(['GET', 'POST'])
+def hello(request):
+    if request.method == 'POST':
+        return Response({'message': 'Получены данные', 'data': request.data})
+    return Response({'message': 'Это был GET-запрос!'})

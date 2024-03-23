@@ -19,10 +19,12 @@ class Cat(models.Model):
     birth_year = models.IntegerField()
     owner = models.ForeignKey(
         User, related_name='cats',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
     )
     achievements = models.ManyToManyField(Achievement,
-                                          through='AchievementCat')
+                                          through='AchievementCat',
+                                          )
     image = models.ImageField(
         upload_to='cats/images/',
         null=True,
