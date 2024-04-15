@@ -1,17 +1,17 @@
 from django.urls import path, include
 
-from .views import cat_list, APICat, CatList, CatDetail, CatViewSet
+from .views import CatViewSet, OwnerViewSet, AchievementViewSet, APICat
+from rest_framework.authtoken import views
+from rest_framework.routers import DefaultRouter
 
-from rest_framework.routers import SimpleRouter
+router = DefaultRouter()
 
-router = SimpleRouter()
-
-router.register('cats_v', CatViewSet, basename='cats_v')
+router.register('cats', CatViewSet, basename='cats')
+router.register(r'owner', OwnerViewSet, basename='owners')
+router.register(r'achievement', AchievementViewSet, basename='achievements')
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('cats/', cat_list),
-    path('cats_class/', APICat.as_view()),
-    path('cats_g/', CatList.as_view()),
-    path('cats_g/<int:pk>/', CatDetail.as_view()),
-    ]
+    path('api-token-auth/', views.obtain_auth_token),
+    path('cats2/', APICat.as_view()),
+]

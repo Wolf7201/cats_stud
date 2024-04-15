@@ -4,8 +4,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Cat
-from .serializers import CatSerializer
+from .models import Cat, User, Achievement
+from .serializers import CatSerializer, OwnerSerializer, AchievementSerializer
 
 
 # View-функция cat_list() будет обрабатывать только запросы GET и POST,
@@ -52,6 +52,7 @@ def cat_list(request):
 
 class APICat(APIView):
     def get(self, request):
+        print(request.user.id)
         cats = Cat.objects.all()
         serializer = CatSerializer(cats, many=True)
         return Response(serializer.data)
@@ -78,3 +79,33 @@ class CatViewSet(viewsets.ModelViewSet):
     queryset = Cat.objects.all()
     serializer_class = CatSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class CatViewSet2(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing or retrieving users.
+    """
+
+    def list(self, request):
+        print(request.user)
+        queryset = Cat.objects.all()
+        serializer = CatSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        queryset = Cat.objects.all()
+        cat = get_object_or_404(queryset, pk=pk)
+        serializer = CatSerializer(cat)
+        return Response(serializer.data)
+
+
+class OwnerViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = OwnerSerializer
+
+
+class AchievementViewSet(viewsets.ModelViewSet):
+    queryset = Achievement.objects.all()
+    serializer_class = AchievementSerializer
