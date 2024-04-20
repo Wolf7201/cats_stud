@@ -17,7 +17,6 @@ class CatSerializer(serializers.ModelSerializer):
         model = Cat
         fields = ('id', 'name', 'color', 'birth_year', 'owner', 'achievements')
 
-
     def create(self, validated_data):
         if 'achievements' not in self.initial_data:
             # То создаём запись о котике без его достижений

@@ -3,7 +3,7 @@ from rest_framework import status, generics, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from .permissions import OwnerOrReadOnly
 from .models import Cat, User, Achievement
 from .serializers import CatSerializer, OwnerSerializer, AchievementSerializer
 
@@ -78,6 +78,8 @@ class CatDetail(generics.RetrieveUpdateDestroyAPIView):
 class CatViewSet(viewsets.ModelViewSet):
     queryset = Cat.objects.all()
     serializer_class = CatSerializer
+
+    permission_classes = (OwnerOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
