@@ -6,6 +6,11 @@ from rest_framework.views import APIView
 from .permissions import OwnerOrReadOnly
 from .models import Cat, User, Achievement
 from .serializers import CatSerializer, OwnerSerializer, AchievementSerializer
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
+from .paginations import OwnersPagination
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 # View-функция cat_list() будет обрабатывать только запросы GET и POST,
@@ -78,34 +83,20 @@ class CatDetail(generics.RetrieveUpdateDestroyAPIView):
 class CatViewSet(viewsets.ModelViewSet):
     queryset = Cat.objects.all()
     serializer_class = CatSerializer
-
-    permission_classes = (OwnerOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-
-class CatViewSet2(viewsets.ViewSet):
-    """
-    A simple ViewSet for listing or retrieving users.
-    """
-
-    def list(self, request):
-        print(request.user)
-        queryset = Cat.objects.all()
-        serializer = CatSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = Cat.objects.all()
-        cat = get_object_or_404(queryset, pk=pk)
-        serializer = CatSerializer(cat)
-        return Response(serializer.data)
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['color', 'birth_year']
+    search_fields = ['^name']
+    ordering_fields = ('name', 'birth_year')
+    ordering = ('birth_year',)
+    # http://127.0.0.1:8000/cats/
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = OwnerSerializer
+    pagination_class = OwnersPagination
+
+    # GET http://127.0.0.1:8000/cats/?limit=2&offset=4
 
 
 class AchievementViewSet(viewsets.ModelViewSet):

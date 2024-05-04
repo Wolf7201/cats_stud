@@ -13,5 +13,5 @@ router.register(r'achievement', AchievementViewSet, basename='achievements')
 urlpatterns = [
     path('', include(router.urls)),
     path('api-token-auth/', views.obtain_auth_token),
-    path('cats2/', APICat.as_view()),
+
 ]

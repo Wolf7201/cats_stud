@@ -1,9 +1,22 @@
-from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.conf import settings
 
-User = get_user_model()
+# User = get_user_model()
+
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import ASCIIUsernameValidator
+from django.db import models
+
+username_validator = ASCIIUsernameValidator()
+MAX_LENGTH_TEXT_FIELD = 150
+MAX_LENGTH_EMAIL = 254
+
+
+class User(AbstractUser):
+    pass
 
 
 class Achievement(models.Model):
